@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8 Наурыз - Шақыру билеті</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-rose: #d81b60;
+            --dark-rose: #701a35;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        /* Артқы фон (толық бекітілген, ешқандай сызықтар шықпайды) */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #fff0f5 0%, #fce4ec 50%, #f8bbd0 100%) fixed;
+            background-size: cover;
+            background-repeat: no-repeat;
+            color: var(--dark-rose);
+        }
+
+        /* Артқы фондағы ұшатын жапырақтар */
+        #background-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .falling-petal {
+            position: absolute;
+            background: rgba(255, 182, 193, 0.6);
+            border-radius: 15px 0 15px 0;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.2);
+            animation: floatingPetal linear infinite;
+        }
+
+        @keyframes floatingPetal {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        /* БҰРЫНҒЫ ӘДЕМІ СЫЙЛЫҚ ДИЗАЙНЫ (Изометриялық иллюзия) */
+        #gift-wrapper {
+            position: relative;
+            z-index: 20;
+            cursor: pointer;
+            width: 200px;
+            height: 200px;
+            perspective: 1000px;
+            animation: gentleFloatBox 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes gentleFloatBox {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-15px) scale(1.02); }
+        }
+
+        #gift-wrapper:hover {
+            animation-play-state: paused;
+            transform: scale(1.08);
+            transition: transform 0.3s ease;
+        }
+
+        .gift-box {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 120px;
+            background: #ffb6c1;
+            border-radius: 8px 8px 12px 12px;
+            box-shadow: inset -10px -10px 20px rgba(216, 27, 96, 0.2), 0 20px 30px rgba(216, 27, 96, 0.3);
+            display: flex;
+            justify-content: center;
+        }
+
+        .box-ribbon-v {
+            position: absolute;
+            width: 30px;
+            height: 100%;
+            background: #ffe4e1;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        .gift-lid-wrapper {
+            position: absolute;
+            bottom: 125px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 176px;
+            height: 45px;
+            z-index: 22;
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: center bottom;
+        }
+
+        .gift-lid {
+            width: 100%;
+            height: 100%;
+            background: #ffb6c1;
+            border-radius: 10px;
+            box-shadow: inset 0 8px 10px rgba(255,255,255,0.6), 0 10px 15px rgba(216, 27, 96, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lid-ribbon-v {
+            position: absolute;
+            width: 30px;
+            height: 100%;
+            background: #ffe4e1;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .lid-ribbon-h {
+            position: absolute;
+            height: 30px;
+            width: 100%;
+            background: #ffe4e1;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .gift-bow {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 40px;
+            z-index: 23;
+        }
+
+        .bow-loop {
+            position: absolute;
+            width: 65px;
+            height: 35px;
+            background: #ffe4e1;
+            border-radius: 40px;
+            box-shadow: inset 0 5px 10px rgba(255,255,255,0.8), 0 4px 6px rgba(216, 27, 96, 0.15);
+        }
+
+        .bow-left { left: 5px; transform: rotate(-10deg); }
+        .bow-right { right: 5px; transform: rotate(10deg); }
+
+        .bow-center {
+            position: absolute;
+            width: 25px;
+            height: 30px;
+            background: #ffb6c1;
+            border-radius: 10px;
+            left: 50%;
+            top: 5px;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 24;
+        }
+
+        .open .gift-lid-wrapper {
+            transform: translateX(-50%) translateY(-150px) rotateX(60deg) scale(1.2);
+            opacity: 0;
+        }
+
+        /* Шарлар контейнері */
+        #particles-layer {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            width: 0;
+            height: 0;
+            overflow: visible;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            opacity: 0;
+            transform-origin: center;
+        }
+
+        @keyframes slowFountain {
+            0% { transform: translate(0, 0) scale(0.2) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            80% { opacity: 0.9; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(var(--s)) rotate(var(--rot)); opacity: 0; }
+        }
+
+        /* Экрандар (fixed арқылы фонмен конфликтті жою) */
+        .screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.5s ease-in-out, visibility 1.5s ease-in-out;
+        }
+
+        #screen1 { z-index: 10; }
+        #screen2, #screen3 {
+            z-index: 5;
+            opacity: 0;
+            visibility: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 3rem 1.5rem;
+            align-items: center;
+        }
+
+        .fade-out { opacity: 0 !important; visibility: hidden !important; pointer-events: none; }
+        .fade-in { opacity: 1 !important; visibility: visible !important; pointer-events: auto; }
+
+        /* 80% Мөлдір (Прозрачный) Тақта */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            border-left: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 30px 60px rgba(216, 27, 96, 0.1);
+            border-radius: 2.5rem;
+            max-width: 850px;
+            width: 100%;
+            padding: 4rem 3rem;
+            text-align: center;
+            transform: translateZ(0); 
+            will-change: transform, opacity;
+            opacity: 0;
+            animation: cardFadeIn 1.5s cubic-bezier(0.25, 1, 0.3, 1) forwards 0.5s;
+        }
+
+        @keyframes cardFadeIn {
+            0% { transform: translateY(40px) translateZ(0); opacity: 0; }
+            100% { transform: translateY(0) translateZ(0); opacity: 1; }
+        }
+
+        /* Текст стилі */
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+
+        .title-text {
+            color: #701a35;
+            line-height: 1.6;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.6);
+        }
+
+        .flower-icon {
+            font-size: 3.5rem;
+            animation: delicateFloat 5s ease-in-out infinite;
+            display: inline-block;
+            filter: drop-shadow(0 10px 15px rgba(216, 27, 96, 0.2));
+        }
+
+        @keyframes delicateFloat {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-12px) rotate(8deg); }
+        }
+
+        /* Видео контейнер */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(216, 27, 96, 0.15);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            margin: 3rem 0;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Ақпараттық блок */
+        .info-badge {
+            background: rgba(255,255,255,0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 1.5rem;
+            padding: 1.5rem 2.5rem;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        /* БАТЫРМАЛАР */
+        .btn-next {
+            display: inline-block;
+            background: linear-gradient(135deg, #d81b60, #ff4081);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            padding: 1rem 3rem;
+            border-radius: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 20px rgba(216, 27, 96, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-next:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(216, 27, 96, 0.4);
+        }
+
+        /* 3-ЭКРАН БАТЫРМАЛАРЫ (ИНТЕРАКТИВ) */
+        .interactive-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+            min-height: 150px;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #d81b60, #ff4081);
+            color: white;
+            border: none;
+            border-radius: 2rem;
+            padding: 1rem 3rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 10px 20px rgba(216, 27, 96, 0.3);
+        }
+
+        .btn-no {
+            background: rgba(255, 255, 255, 0.5);
+            color: #701a35;
+            border: 2px solid #ffb6c1;
+            border-radius: 2rem;
+            padding: 1rem 3rem;
+            font-size: 1.25rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Соңғы жауап экран */
+        #success-message {
+            display: none;
+            animation: fadeInScale 1s ease forwards;
+        }
+
+        /* БАСЫНА ҚАЙТУ БАТЫРМАСЫ */
+        .btn-restart {
+            margin-top: 3rem;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid #ffb6c1;
+            color: #d81b60;
+            padding: 0.8rem 2rem;
+            border-radius: 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-restart:hover {
+            background: white;
+            box-shadow: 0 5px 15px rgba(216, 27, 96, 0.15);
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 640px) {
+            .glass-card { padding: 2.5rem 1.5rem; }
+            .title-text { font-size: 1.5rem !important; }
+            .interactive-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Артқы фондағы ұшатын жапырақтар -->
+    <div id="background-particles"></div>
+
+    <!-- 1-Экран: СЫЙЛЫҚ -->
+    <div id="screen1" class="screen fade-in">
+        <div id="gift-wrapper" onclick="openGift()">
+            
+            <div class="gift-box">
+                <div class="box-ribbon-v"></div>
+            </div>
+
+            <div class="gift-lid-wrapper" id="lid">
+                <div class="gift-bow">
+                    <div class="bow-loop bow-left"></div>
+                    <div class="bow-loop bow-right"></div>
+                    <div class="bow-center"></div>
+                </div>
+                <div class="gift-lid">
+                    <div class="lid-ribbon-v"></div>
+                    <div class="lid-ribbon-h"></div>
+                </div>
+            </div>
+
+            <div id="particles-layer"></div>
+        </div>
+    </div>
+
+    <!-- 2-Экран: Шақыру -->
+    <div id="screen2" class="screen">
+        <div class="glass-card">
+            
+            <h1 class="font-playfair font-semibold text-2xl md:text-3xl lg:text-4xl title-text mb-6">
+                Құрметті арулар! Сіздерді көктемнің алғашқы күлімдеген мерекесі – 8 Наурызға арналған кешімізге үлкен қуанышпен шақырамыз!
+            </h1>
+            
+            <div class="my-6 flower-icon">🌸</div>
+            
+            <p class="font-montserrat text-lg md:text-xl mb-8 leading-relaxed font-medium" style="color: #60122a;">
+                Бұл күн тек сіздердің сұлулықтарыңыз бен нәзіктіктеріңізді ұлықтайтын, ән мен биге, күлкі мен шаттыққа толы ерекше сәт болмақ.
+            </p>
+
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/Dx8DlJUDtfw" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            
+            <p class="font-montserrat text-lg md:text-xl mb-10 leading-relaxed font-medium" style="color: #60122a;">
+                Біздің ортамыздың гүлі болып, кешіміздің көркін қыздыруға келіңіздер! Сіздерді асыға күтеміз! 🌷✨
+            </p>
+            
+            <div class="info-badge text-left block w-fit mx-auto">
+                <div class="mb-4">
+                    <span class="font-montserrat font-bold tracking-widest uppercase text-xs text-pink-600 block mb-1 opacity-90">Өтетін орны</span>
+                    <span class="font-playfair text-2xl md:text-3xl font-semibold text-rose-950">Мектеп </span>
+                </div>
+                <div class="w-full h-px bg-pink-300/60 my-4"></div>
+                <div>
+                    <span class="font-montserrat font-bold tracking-widest uppercase text-xs text-pink-600 block mb-1 opacity-90">Уақыты мен Күні</span>
+                    <span class="font-playfair text-2xl md:text-3xl font-semibold text-rose-950">07.03.2026</span>
+                </div>
+            </div>
+
+            <button class="btn-next mt-4" onclick="goToScreen3()">Жауабыңызды күтеміз 💌</button>
+            
+        </div>
+    </div>
+
+    <!-- 3-Экран: Интерактивті сұрақ -->
+    <div id="screen3" class="screen">
+        <div class="glass-card" id="question-card">
+            
+            <div id="question-content">
+                <h1 class="font-playfair font-semibold text-3xl md:text-5xl title-text mb-8">
+                    Біздің керемет кешіміздің қадірлі қонағы боласыз ба?
+                </h1>
+                
+                <div class="interactive-buttons">
+                    <button class="btn-yes font-montserrat" id="btnYes" onclick="handleYes()">Әрине, барамын!</button>
+                    <button class="btn-no font-montserrat" id="btnNo" onclick="handleNo()">Жоқ</button>
+                </div>
+            </div>
+
+            <div id="success-message">
+                <div class="text-6xl mb-6">💖🌸✨</div>
+                <h1 class="font-playfair font-semibold text-3xl md:text-5xl title-text leading-relaxed">
+                    Алақай! Сіздің келетініңізге өте қуаныштымыз! 🎉
+                </h1>
+                <p class="font-montserrat text-xl mt-6 font-medium text-rose-900">
+                    Мерекеде жүздескенше! 💖
+                </p>
+
+                <button class="btn-restart font-montserrat" onclick="restartInvitation()">
+                    <span>🔄</span> Басына қайту
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Артқы фондағы жапырақшаларды жасау
+        function createFallingPetals() {
+            const container = document.getElementById('background-particles');
+            const petalCount = 35;
+
+            for (let i = 0; i < petalCount; i++) {
+                let petal = document.createElement('div');
+                petal.className = 'falling-petal';
+                
+                let size = Math.random() * 15 + 10;
+                let left = Math.random() * 100;
+                let duration = Math.random() * 10 + 10;
+                let delay = Math.random() * 15;
+                
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size}px`;
+                petal.style.left = `${left}%`;
+                petal.style.animationDuration = `${duration}s`;
+                petal.style.animationDelay = `-${delay}s`;
+                
+                container.appendChild(petal);
+            }
+        }
+        createFallingPetals();
+
+        // 1. Сыйлықты ашу логикасы
+        let isOpened = false;
+
+        function openGift() {
+            if (isOpened) return;
+            isOpened = true;
+
+            const giftWrapper = document.getElementById('gift-wrapper');
+            giftWrapper.classList.add('open');
+            giftWrapper.style.cursor = 'default';
+            giftWrapper.style.animationPlayState = 'paused';
+
+            generateParticlesGradually();
+
+            setTimeout(() => {
+                const screen1 = document.getElementById('screen1');
+                const screen2 = document.getElementById('screen2');
+                
+                screen1.classList.remove('fade-in');
+                screen1.classList.add('fade-out');
+                
+                screen2.classList.remove('fade-out');
+                screen2.classList.add('fade-in');
+            }, 5500); 
+        }
+
+        // 2. Бөлшектердің ұшуы (ҮЛКЕЙТІЛГЕН ӨЛШЕМДЕР)
+        function generateParticlesGradually() {
+            const layer = document.getElementById('particles-layer');
+            layer.innerHTML = ''; 
+            const totalParticles = 100; // Кішкене азайттық, себебі олар үлкен
+            const balloonColors = ['#ffb6c1', '#f8c8dc', '#ff69b4', '#ffe4e1', '#fff0f5', '#ff9ea7'];
+            const types = ['balloon', 'balloon', 'flower', 'petal'];
+
+            for (let i = 0; i < totalParticles; i++) {
+                let delay = Math.random() * 3000; 
+                
+                setTimeout(() => {
+                    let type = types[Math.floor(Math.random() * types.length)];
+                    let particle = document.createElement('div');
+                    particle.className = 'particle';
+
+                    if (type === 'balloon') {
+                        let color = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+                        // Шарлар үлкейтілді: 70x100
+                        particle.innerHTML = `
+                            <svg viewBox="0 0 100 140" style="width: 70px; height: 100px; filter: drop-shadow(0 8px 10px rgba(255,105,180,0.3));">
+                                <path d="M50,10 C20,10 10,40 10,60 C10,90 40,110 50,120 C60,110 90,90 90,60 C90,40 80,10 50,10 Z" fill="${color}"/>
+                                <path d="M50,120 L45,130 L55,130 Z" fill="${color}"/>
+                                <path d="M50,130 Q45,145 50,160" stroke="rgba(255,255,255,0.7)" stroke-width="2" fill="none"/>
+                            </svg>`;
+                    } else if (type === 'flower') {
+                        // Гүлдер үлкейтілді: 45x45
+                        particle.innerHTML = `
+                            <svg viewBox="0 0 100 100" style="width: 45px; height: 45px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
+                                <path d="M50,15 C55,5 75,0 85,15 C95,30 85,50 50,50 C85,50 95,70 85,85 C75,100 55,95 50,85 C45,95 25,100 15,85 C5,70 15,50 50,50 C15,50 5,30 15,15 C25,0 45,5 50,15 Z" fill="#ff9ea7"/>
+                                <circle cx="50" cy="50" r="10" fill="#fcf6ba"/>
+                            </svg>`;
+                    } else {
+                        // Жапырақтар үлкейтілді: 30x30
+                        particle.style.width = '30px';
+                        particle.style.height = '30px';
+                        particle.style.background = 'rgba(255, 182, 193, 0.8)';
+                        particle.style.borderRadius = '20px 0 20px 0';
+                        particle.style.boxShadow = '0 0 12px rgba(255, 105, 180, 0.3)';
+                    }
+
+                    let angle = (Math.random() * 140 + 200) * (Math.PI / 180); 
+                    let distance = Math.random() * 800 + 400; // Сәл биігірек ұшады
+                    
+                    let tx = Math.cos(angle) * distance;
+                    let ty = Math.sin(angle) * distance - 400; 
+                    let scale = Math.random() * 1.5 + 0.8; // Масштаб еселенді
+                    let rot = Math.random() * 360;
+                    
+                    let duration = Math.random() * 2.5 + 4; 
+
+                    particle.style.setProperty('--tx', `${tx}px`);
+                    particle.style.setProperty('--ty', `${ty}px`);
+                    particle.style.setProperty('--s', `${scale}`);
+                    particle.style.setProperty('--rot', `${rot}deg`);
+                    
+                    particle.style.animation = `slowFountain ${duration}s cubic-bezier(0.25, 1, 0.5, 1) forwards`;
+
+                    layer.appendChild(particle);
+                }, delay);
+            }
+        }
+
+        // 3. Үшінші экранға өту
+        function goToScreen3() {
+            const screen2 = document.getElementById('screen2');
+            const screen3 = document.getElementById('screen3');
+            
+            const iframe = screen2.querySelector('iframe');
+            const iframeSrc = iframe.src;
+            iframe.src = iframeSrc;
+
+            screen2.classList.remove('fade-in');
+            screen2.classList.add('fade-out');
+            
+            setTimeout(() => {
+                screen3.classList.remove('fade-out');
+                screen3.classList.add('fade-in');
+                document.getElementById('screen3').scrollTop = 0;
+            }, 800);
+        }
+
+        // 4. Интерактивті сұрақ логикасы (15 ВАРИАНТ)
+        const noTexts = [
+            "Шынымен бе? 🥺", 
+            "Мүмкін қайта ойланарсыз?", 
+            "Біз сізсіз қалай көңіл көтереміз? 😢", 
+            "Ал егер қатты-қатты өтінсек ше?", 
+            "Тәттілер көп болады ғой! 🍰",
+            "Біз сізді бәрібір күтеміз!",
+            "Тышқанды қате басып қалдыңыз-ау деймін...",
+            "Жүрегімізді жараламаңыз 💔",
+            "Сізсіз мереке - мереке емес!",
+            "Бұл батырма бұзылған сияқты...",
+            "Қашып құтыла алмайсыз! 🏃‍♀️",
+            "Келісе салсаңызшы енді!",
+        ];
+        
+        let noCount = 0;
+        let yesScale = 1;
+
+        function handleNo() {
+            const btnNo = document.getElementById('btnNo');
+            const btnYes = document.getElementById('btnYes');
+
+            btnNo.innerText = noTexts[noCount % noTexts.length];
+            noCount++;
+
+            let noScale = Math.max(0.4, 1 - (noCount * 0.1));
+            btnNo.style.transform = `scale(${noScale})`;
+            
+            yesScale += 0.4;
+            btnYes.style.transform = `scale(${yesScale})`;
+            
+            if(yesScale > 2) {
+                btnYes.style.margin = `${(yesScale - 1) * 20}px`;
+            }
+        }
+
+        function handleYes() {
+            const content = document.getElementById('question-content');
+            const success = document.getElementById('success-message');
+
+            content.style.display = 'none';
+            success.style.display = 'block';
+
+            createFallingPetals();
+            createFallingPetals();
+        }
+
+        // 5. Басына қайту функциясы
+        function restartInvitation() {
+            isOpened = false;
+            noCount = 0;
+            yesScale = 1;
+
+            const btnNo = document.getElementById('btnNo');
+            const btnYes = document.getElementById('btnYes');
+            btnNo.innerText = 'Жоқ';
+            btnNo.style.transform = 'scale(1)';
+            btnYes.style.transform = 'scale(1)';
+            btnYes.style.margin = '0px';
+
+            document.getElementById('question-content').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+
+            // Сыйлықты қалпына келтіру
+            const giftWrapper = document.getElementById('gift-wrapper');
+            giftWrapper.classList.remove('open');
+            giftWrapper.style.cursor = 'pointer';
+            giftWrapper.style.animationPlayState = 'running';
+
+            document.getElementById('particles-layer').innerHTML = '';
+
+            const screen1 = document.getElementById('screen1');
+            const screen2 = document.getElementById('screen2');
+            const screen3 = document.getElementById('screen3');
+
+            screen3.classList.remove('fade-in');
+            screen3.classList.add('fade-out');
+            
+            screen2.classList.remove('fade-in');
+            screen2.classList.add('fade-out');
+
+            setTimeout(() => {
+                screen1.classList.remove('fade-out');
+                screen1.classList.add('fade-in');
+            }, 800);
+        }
+
+    </script>
+</body>
+</html>
