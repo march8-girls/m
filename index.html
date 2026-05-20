@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="kk" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Достық — Мәңгілік Естеліктер</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0806;
+  --bg2: #110e0a;
+  --surface: rgba(255,245,230,0.04);
+  --surface2: rgba(255,245,230,0.07);
+  --gold: #c9a45c;
+  --gold2: #e8c97a;
+  --amber: #d4793a;
+  --cream: #f5ead8;
+  --text: #e8dcc8;
+  --text2: #a89880;
+  --glow: rgba(201,164,92,0.15);
+  --glow2: rgba(201,164,92,0.35);
+  --border: rgba(201,164,92,0.15);
+  --border2: rgba(201,164,92,0.3);
+  --glass: rgba(20,15,8,0.6);
+}
+[data-theme="light"] {
+  --bg: #fdf6ec;
+  --bg2: #f5ead5;
+  --surface: rgba(120,80,20,0.05);
+  --surface2: rgba(120,80,20,0.09);
+  --gold: #9a6a20;
+  --gold2: #b8830a;
+  --amber: #c25820;
+  --cream: #3a2a10;
+  --text: #2a1a05;
+  --text2: #7a5a30;
+  --glow: rgba(180,120,40,0.12);
+  --glow2: rgba(180,120,40,0.25);
+  --border: rgba(150,100,30,0.2);
+  --border2: rgba(150,100,30,0.4);
+  --glass: rgba(253,246,236,0.7);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;
+  line-height:1.7;
+  cursor:none;
+  transition:background 0.6s,color 0.6s;
+}
+
+/* CURSOR */
+#cursor{
+  position:fixed;width:12px;height:12px;
+  background:var(--gold);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform 0.1s,width 0.3s,height 0.3s,opacity 0.3s;
+  box-shadow:0 0 20px var(--gold2),0 0 40px rgba(201,164,92,0.3);
+  mix-blend-mode:screen;
+}
+#cursor-trail{
+  position:fixed;width:40px;height:40px;
+  border:1px solid rgba(201,164,92,0.3);border-radius:50%;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:left 0.15s ease,top 0.15s ease;
+}
+body:hover #cursor{opacity:1;}
+
+/* LOADING */
+#loader{
+  position:fixed;inset:0;z-index:10000;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 0.8s, visibility 0.8s;
+}
+#loader.hidden{opacity:0;visibility:hidden;}
+.loader-title{
+  font-family:'Cinzel',serif;
+  font-size:clamp(1.5rem,4vw,3rem);
+  color:var(--gold);
+  letter-spacing:0.3em;
+  animation:loaderPulse 2s ease-in-out infinite;
+}
+.loader-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  color:var(--text2);
+  font-size:1.1rem;
+  margin-top:1rem;
+  letter-spacing:0.15em;
+  animation:loaderPulse 2s ease-in-out infinite 0.5s;
+}
+.loader-bar{
+  width:200px;height:1px;
+  background:rgba(201,164,92,0.2);
+  margin-top:2rem;overflow:hidden;
+}
+.loader-fill{
+  height:100%;background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  animation:loaderFill 2.5s ease-in-out forwards;
+}
+@keyframes loaderPulse{0%,100%{opacity:0.4;}50%{opacity:1;}}
+@keyframes loaderFill{0%{width:0;transform:translateX(-100%);}100%{width:100%;transform:translateX(0);}}
+
+/* PARTICLES */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.particle{
+  position:absolute;
+  border-radius:50%;
+  background:var(--gold);
+  opacity:0;
+  animation:floatParticle linear infinite;
+}
+@keyframes floatParticle{
+  0%{opacity:0;transform:translateY(0) scale(0);}
+  10%{opacity:0.6;}
+  90%{opacity:0.2;}
+  100%{opacity:0;transform:translateY(-100vh) scale(1) translateX(var(--drift,0px));}
+}
+
+/* THEME TOGGLE */
+#theme-btn{
+  position:fixed;top:1.5rem;right:1.5rem;z-index:1000;
+  width:48px;height:48px;border-radius:50%;
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--gold);font-size:1.2rem;cursor:none;
+  backdrop-filter:blur(10px);
+  transition:all 0.3s;display:flex;align-items:center;justify-content:center;
+}
+#theme-btn:hover{background:var(--glow2);border-color:var(--gold);box-shadow:0 0 20px var(--glow2);}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1.2rem 3rem;
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--glass);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:all 0.3s;
+}
+.nav-logo{
+  font-family:'Cinzel',serif;
+  font-size:1.1rem;letter-spacing:0.25em;
+  color:var(--gold);
+  text-shadow:0 0 20px var(--glow2);
+}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{
+  color:var(--text2);font-size:0.85rem;
+  letter-spacing:0.1em;text-decoration:none;
+  transition:color 0.3s;font-family:'Cinzel',serif;
+}
+.nav-links a:hover{color:var(--gold);}
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem;}
+  .nav-links{display:none;}
+}
+
+/* HERO */
+#hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:6rem 2rem 4rem;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,164,92,0.07) 0%, transparent 70%),
+             radial-gradient(ellipse 40% 40% at 20% 80%, rgba(212,121,58,0.05) 0%, transparent 60%),
+             radial-gradient(ellipse 40% 40% at 80% 20%, rgba(201,164,92,0.05) 0%, transparent 60%);
+}
+.hero-eyebrow{
+  font-family:'Cinzel',serif;
+  font-size:0.75rem;letter-spacing:0.4em;
+  color:var(--gold);margin-bottom:2rem;
+  opacity:0;animation:fadeUp 1s 0.5s forwards;
+}
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(3rem,8vw,7rem);
+  font-weight:900;line-height:1.05;
+  background:linear-gradient(135deg,var(--cream) 0%,var(--gold2) 40%,var(--amber) 70%,var(--cream) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp 1s 0.8s forwards;
+  text-shadow:none;
+}
+.hero-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:clamp(1.1rem,2.5vw,1.5rem);
+  color:var(--text2);max-width:600px;
+  opacity:0;animation:fadeUp 1s 1.1s forwards;
+  margin-bottom:3rem;
+}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:0.75rem;
+  padding:1rem 2.5rem;
+  background:linear-gradient(135deg,rgba(201,164,92,0.15),rgba(212,121,58,0.1));
+  border:1px solid var(--border2);border-radius:50px;
+  color:var(--gold2);
+  font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:0.15em;
+  text-decoration:none;cursor:none;
+  opacity:0;animation:fadeUp 1s 1.4s forwards;
+  transition:all 0.4s;
+  backdrop-filter:blur(10px);
+  position:relative;overflow:hidden;
+}
+.hero-cta::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(201,164,92,0.2),rgba(212,121,58,0.15));
+  opacity:0;transition:opacity 0.4s;border-radius:inherit;
+}
+.hero-cta:hover::before{opacity:1;}
+.hero-cta:hover{box-shadow:0 0 40px var(--glow2),0 0 80px rgba(201,164,92,0.1);transform:translateY(-2px);}
+.cta-arrow{animation:arrowPulse 2s ease-in-out infinite;}
+@keyframes arrowPulse{0%,100%{transform:translateX(0);}50%{transform:translateX(5px);}}
+.hero-scroll{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+  color:var(--text2);font-size:0.7rem;letter-spacing:0.3em;
+  font-family:'Cinzel',serif;
+  animation:scrollBounce 2s ease-in-out infinite;
+}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);}
+@keyframes scrollBounce{0%,100%{opacity:0.4;transform:translateX(-50%) translateY(0);}50%{opacity:1;transform:translateX(-50%) translateY(8px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+
+/* SECTION COMMON */
+section{position:relative;z-index:1;padding:6rem 2rem;}
+.section-label{
+  font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.5em;
+  color:var(--gold);margin-bottom:1rem;
+  display:block;text-align:center;
+}
+.section-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,5vw,3.5rem);font-weight:700;
+  text-align:center;margin-bottom:1rem;
+  color:var(--cream);
+}
+.section-divider{
+  width:80px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin:0 auto 4rem;
+}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s,transform 0.8s;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* MEMORIES */
+#memories{background:linear-gradient(to bottom,var(--bg) 0%,var(--bg2) 100%);}
+.memories-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:1.5rem;max-width:1200px;margin:0 auto;
+}
+.memory-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;padding:2rem;
+  backdrop-filter:blur(20px);
+  transition:all 0.4s;
+  position:relative;overflow:hidden;cursor:none;
+}
+.memory-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%), var(--glow) 0%, transparent 60%);
+  opacity:0;transition:opacity 0.4s;
+}
+.memory-card:hover::before{opacity:1;}
+.memory-card:hover{
+  border-color:var(--border2);
+  transform:translateY(-6px);
+  box-shadow:0 20px 60px rgba(0,0,0,0.3),0 0 40px var(--glow);
+}
+.memory-icon{
+  font-size:1.8rem;margin-bottom:1rem;display:block;
+  filter:sepia(1) saturate(2) hue-rotate(-10deg);
+}
+.memory-year{
+  font-family:'Cinzel',serif;font-size:0.7rem;
+  letter-spacing:0.3em;color:var(--gold);
+  margin-bottom:0.75rem;display:block;
+}
+.memory-text{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:1.05rem;
+  color:var(--text2);line-height:1.8;
+}
+.memory-tag{
+  display:inline-block;margin-top:1.2rem;
+  padding:0.3rem 0.8rem;border-radius:20px;
+  background:rgba(201,164,92,0.08);
+  border:1px solid rgba(201,164,92,0.2);
+  font-size:0.75rem;font-family:'Cinzel',serif;
+  letter-spacing:0.1em;color:var(--gold);
+}
+
+/* TIMELINE */
+#timeline{background:var(--bg);}
+.timeline-wrap{max-width:800px;margin:0 auto;position:relative;padding:2rem 0;}
+.timeline-line{
+  position:absolute;left:50%;top:0;bottom:0;width:1px;
+  background:linear-gradient(to bottom,transparent,var(--gold),transparent);
+  transform:translateX(-50%);
+}
+@media(max-width:640px){.timeline-line{left:20px;}}
+.timeline-item{
+  display:grid;grid-template-columns:1fr 40px 1fr;
+  gap:0;margin-bottom:3rem;
+  align-items:center;
+}
+.timeline-item:nth-child(even) .tl-content{grid-column:3;text-align:left;}
+.timeline-item:nth-child(even) .tl-spacer{grid-column:2;}
+.timeline-item:nth-child(even) .tl-empty{grid-column:1;}
+.timeline-item:nth-child(odd) .tl-content{grid-column:1;text-align:right;}
+.timeline-item:nth-child(odd) .tl-spacer{grid-column:2;}
+.timeline-item:nth-child(odd) .tl-empty{grid-column:3;}
+.tl-content{
+  background:var(--surface);
+  border:1px solid var(--border);border-radius:12px;
+  padding:1.5rem;
+  backdrop-filter:blur(20px);
+  transition:all 0.4s;cursor:none;
+}
+.tl-content:hover{border-color:var(--border2);box-shadow:0 10px 40px var(--glow);}
+.tl-spacer{
+  display:flex;align-items:center;justify-content:center;z-index:2;
+  grid-column:2;
+}
+.tl-dot{
+  width:14px;height:14px;border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 20px var(--gold2),0 0 40px rgba(201,164,92,0.4);
+  flex-shrink:0;
+}
+.tl-year{
+  font-family:'Cinzel',serif;font-size:0.75rem;
+  letter-spacing:0.2em;color:var(--gold);
+  margin-bottom:0.5rem;display:block;
+}
+.tl-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.1rem;color:var(--cream);
+  margin-bottom:0.5rem;
+}
+.tl-desc{font-size:0.95rem;color:var(--text2);font-style:italic;}
+@media(max-width:640px){
+  .timeline-item{grid-template-columns:40px 1fr;}
+  .timeline-item:nth-child(even) .tl-content,
+  .timeline-item:nth-child(odd) .tl-content{grid-column:2;text-align:left;}
+  .timeline-item:nth-child(even) .tl-spacer,
+  .timeline-item:nth-child(odd) .tl-spacer{grid-column:1;}
+  .timeline-item .tl-empty{display:none;}
+}
+
+/* FRIENDS */
+#friends{background:linear-gradient(to bottom,var(--bg2),var(--bg));}
+.friends-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1.5rem;max-width:1200px;margin:0 auto;
+}
+.friend-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:2.5rem 2rem;
+  text-align:center;
+  backdrop-filter:blur(20px);
+  transition:all 0.4s;cursor:none;
+  position:relative;overflow:hidden;
+}
+.friend-card::after{
+  content:'';position:absolute;
+  top:-50%;left:-50%;width:200%;height:200%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(201,164,92,0.05) 10%,transparent 20%);
+  animation:rotateBg 8s linear infinite;opacity:0;
+  transition:opacity 0.4s;
+}
+.friend-card:hover::after{opacity:1;}
+.friend-card:hover{border-color:var(--border2);transform:translateY(-8px);box-shadow:0 25px 60px rgba(0,0,0,0.3),0 0 50px var(--glow);}
+@keyframes rotateBg{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.friend-avatar{
+  width:80px;height:80px;border-radius:50%;
+  margin:0 auto 1.5rem;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;position:relative;
+  background:linear-gradient(135deg,var(--surface2),rgba(201,164,92,0.08));
+  border:1px solid var(--border2);
+  box-shadow:0 0 30px var(--glow);
+}
+.friend-avatar::before{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  background:conic-gradient(var(--gold),var(--amber),transparent,var(--gold));
+  z-index:-1;opacity:0.4;animation:spinBorder 4s linear infinite;
+}
+@keyframes spinBorder{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+.friend-name{
+  font-family:'Playfair Display',serif;
+  font-size:1.3rem;color:var(--cream);margin-bottom:0.75rem;
+}
+.friend-role{
+  font-family:'Cinzel',serif;font-size:0.7rem;
+  letter-spacing:0.2em;color:var(--gold);margin-bottom:1rem;
+}
+.friend-desc{font-size:0.95rem;color:var(--text2);font-style:italic;line-height:1.7;}
+
+/* MUSIC */
+#music{
+  background:linear-gradient(135deg,var(--bg) 0%,rgba(30,20,10,1) 50%,var(--bg) 100%);
+  text-align:center;
+}
+.music-player{
+  max-width:500px;margin:0 auto;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:24px;padding:2.5rem;
+  backdrop-filter:blur(30px);
+  box-shadow:0 30px 80px rgba(0,0,0,0.4),0 0 60px var(--glow);
+}
+.music-cover{
+  width:160px;height:160px;border-radius:50%;
+  margin:0 auto 2rem;
+  background:linear-gradient(135deg,rgba(201,164,92,0.2),rgba(212,121,58,0.1));
+  border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:3rem;position:relative;
+  animation:coverSpin 20s linear infinite paused;
+  box-shadow:0 0 40px var(--glow2);
+}
+.music-cover.playing{animation-play-state:running;}
+.music-cover::before{
+  content:'';position:absolute;inset:-3px;border-radius:50%;
+  background:conic-gradient(var(--gold) var(--progress,0%), transparent var(--progress,0%));
+  z-index:-1;transition:--progress 0.3s;
+}
+@keyframes coverSpin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+.music-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--cream);margin-bottom:0.25rem;}
+.music-artist{font-size:0.9rem;color:var(--gold);font-style:italic;margin-bottom:1.5rem;}
+.music-progress{
+  width:100%;height:3px;background:rgba(201,164,92,0.15);
+  border-radius:10px;margin-bottom:1.5rem;cursor:none;
+  position:relative;overflow:hidden;
+}
+.music-progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));
+  border-radius:10px;width:0%;transition:width 0.3s;
+}
+.music-time{
+  display:flex;justify-content:space-between;
+  font-size:0.75rem;color:var(--text2);
+  font-family:'Cinzel',serif;margin-bottom:1.5rem;
+}
+.music-controls{display:flex;align-items:center;justify-content:center;gap:1.5rem;}
+.music-btn{
+  background:none;border:none;color:var(--gold2);
+  font-size:1.2rem;cursor:none;transition:all 0.3s;
+  width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.music-btn:hover{background:var(--glow);transform:scale(1.1);}
+.music-btn.play{
+  width:56px;height:56px;font-size:1.5rem;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  color:var(--bg);box-shadow:0 0 30px var(--glow2);
+}
+.music-btn.play:hover{transform:scale(1.05);box-shadow:0 0 50px var(--glow2);}
+.music-visualizer{
+  display:flex;align-items:flex-end;justify-content:center;
+  gap:3px;height:30px;margin-bottom:1rem;
+}
+.viz-bar{
+  width:3px;background:linear-gradient(to top,var(--amber),var(--gold2));
+  border-radius:2px;min-height:4px;
+  animation:vizAnim 0.8s ease-in-out infinite;
+  animation-play-state:paused;
+}
+.viz-bar.active{animation-play-state:running;}
+@keyframes vizAnim{
+  0%,100%{height:4px;}
+  50%{height:var(--h,20px);}
+}
+
+/* QUOTES */
+#quotes{background:var(--bg2);text-align:center;}
+.quotes-grid{
+  max-width:900px;margin:0 auto;
+  display:grid;gap:2rem;
+}
+.quote-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:3rem 2.5rem;
+  backdrop-filter:blur(20px);
+  position:relative;transition:all 0.4s;cursor:none;
+}
+.quote-card::before{
+  content:'"';
+  position:absolute;top:-0.5rem;left:2rem;
+  font-family:'Playfair Display',serif;font-size:8rem;
+  color:var(--gold);opacity:0.08;line-height:1;
+  pointer-events:none;
+}
+.quote-card:hover{border-color:var(--border2);box-shadow:0 15px 50px var(--glow);}
+.quote-text{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-size:clamp(1.1rem,2.5vw,1.4rem);
+  color:var(--cream);line-height:1.7;margin-bottom:1.5rem;
+}
+.quote-author{
+  font-family:'Cinzel',serif;font-size:0.75rem;
+  letter-spacing:0.25em;color:var(--gold);
+}
+.typing-cursor{
+  display:inline-block;width:2px;height:1em;
+  background:var(--gold);animation:blink 1s step-end infinite;
+  vertical-align:text-bottom;margin-left:2px;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* FINAL */
+#final{
+  min-height:80vh;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201,164,92,0.06) 0%, transparent 70%),var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:6rem 2rem;
+  position:relative;overflow:hidden;
+}
+.final-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,6vw,4.5rem);font-weight:900;
+  background:linear-gradient(135deg,var(--cream),var(--gold2),var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:1.5rem;
+}
+.final-text{
+  max-width:600px;font-size:1.15rem;font-style:italic;
+  color:var(--text2);line-height:1.9;margin-bottom:3rem;
+}
+.final-signature{
+  font-family:'Playfair Display',serif;
+  font-style:italic;font-size:1.5rem;
+  color:var(--gold);
+  margin-bottom:1rem;
+}
+.final-year{
+  font-family:'Cinzel',serif;font-size:0.75rem;
+  letter-spacing:0.4em;color:var(--text2);
+}
+.stars{position:absolute;inset:0;pointer-events:none;}
+.star{
+  position:absolute;width:2px;height:2px;background:var(--gold2);
+  border-radius:50%;animation:twinkle linear infinite;
+  box-shadow:0 0 4px var(--gold);
+}
+@keyframes twinkle{
+  0%,100%{opacity:0;}
+  50%{opacity:var(--op,0.8);}
+}
+footer{
+  text-align:center;padding:2rem;
+  border-top:1px solid var(--border);
+  font-family:'Cinzel',serif;font-size:0.75rem;
+  letter-spacing:0.2em;color:var(--text2);
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<div id="loader">
+  <div class="loader-title">ДОСТЫҚ</div>
+  <div class="loader-sub">Естеліктер жүктелуде...</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<div id="particles"></div>
+
+<button id="theme-btn" title="Тема ауыстыру">☀️</button>
+
+<nav>
+  <div class="nav-logo">ДОСТЫҚ</div>
+  <ul class="nav-links">
+    <li><a href="#memories">Естеліктер</a></li>
+    <li><a href="#timeline">Уақыт</a></li>
+    <li><a href="#friends">Достар</a></li>
+    <li><a href="#music">Музыка</a></li>
+    <li><a href="#quotes">Сөздер</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <span class="hero-eyebrow">МӘҢГІЛІК ДОСТЫҚ • ҰМЫТЫЛМАС КЕЗДЕР</span>
+  <h1 class="hero-title">Жүрек<br>Естеліктері</h1>
+  <p class="hero-sub">Мектеп қабырғасында туған достықтар, ортақ күлкі мен жастық шақтың ұмытылмас сәттері — бұл барлығы бізбен мәңгі.</p>
+  <a href="#memories" class="hero-cta">
+    Естеліктерге кіру
+    <span class="cta-arrow">→</span>
+  </a>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>ТӨМЕН</span>
+  </div>
+</section>
+
+<!-- MEMORIES -->
+<section id="memories">
+  <span class="section-label reveal">ЖАДЫМДА</span>
+  <h2 class="section-title reveal">Ұмытылмас Сәттер</h2>
+  <div class="section-divider reveal"></div>
+  <div class="memories-grid">
+    <div class="memory-card reveal">
+      <span class="memory-icon">🌅</span>
+      <span class="memory-year">БАСТАУЫШ СЫНЫП</span>
+      <p class="memory-text">Бірінші рет мектепке келген күн — жүрек қалтылдап, аяқ баспай, бірақ сыныптасым қолымнан ұстап: «Қорықпа, мен де қорқамын» — деді.</p>
+      <span class="memory-tag">Алғашқы кездесу</span>
+    </div>
+    <div class="memory-card reveal">
+      <span class="memory-icon">📚</span>
+      <span class="memory-year">3-СЫНЫП</span>
+      <p class="memory-text">Математика сабағында бірге алдыңғы партада отырып, мұғалім байқамасын деп бір-бірімізге жауапты сыбырлап айтушы едік. Күлкіден бет бұра алмай қалатынбыз.</p>
+      <span class="memory-tag">Сабақ кезінде</span>
+    </div>
+    <div class="memory-card reveal">
+      <span class="memory-icon">🍎</span>
+      <span class="memory-year">5-СЫНЫП</span>
+      <p class="memory-text">Үзіліс уақытында асханада орын жоқ болғанда, коридорда тізе бүгіп отырып, бірге тамақ жеген ол кез — ең бақытты пауза болды.</p>
+      <span class="memory-tag">Асхана</span>
+    </div>
+    <div class="memory-card reveal">
+      <span class="memory-icon">⚽</span>
+      <span class="memory-year">6-СЫНЫП</span>
+      <p class="memory-text">Мектеп стадионында кешкі ойын — топ тепкен соң жасаған айқайымыз бүкіл ауданға естілген шығар. Жеңілгенде де бірге жылаған жоқпыз, тек күлдік.</p>
+      <span class="memory-tag">Спорт</span>
+    </div>
+    <div class="memory-card reveal">
+      <span class="memory-icon">🎭</span>
+      <span class="memory-year">7-СЫНЫП</span>
+      <p class="memory-text">Мектеп кешінде рөл бөлінгенде ең жаман рөл маған тиді. Ал досым: «Сен ең жарқын болдың» — деп тіл жеткізе алмастай қуандырды.</p>
+      <span class="memory-tag">Мектеп кеші</span>
+    </div>
+    <div class="memory-card reveal">
+      <span class="memory-icon">🌙</span>
+      <span class="memory-year">9-СЫНЫП</span>
+      <p class="memory-text">Сынаққа дейінгі кеш — телефонда таңға дейін бірге оқып, кейін екеуміз де ұйықтап кетіп, таңертең «қандай жауап бердің?» — деп күлісіп едік.</p>
+      <span class="memory-tag">Емтихан</span>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <span class="section-label reveal">ХРОНОЛОГИЯ</span>
+  <h2 class="section-title reveal">Достықтың Жолы</h2>
+  <div class="section-divider reveal"></div>
+  <div class="timeline-wrap reveal">
+    <div class="timeline-line"></div>
+    <div class="timeline-item">
+      <div class="tl-content">
+        <span class="tl-year">2015</span>
+        <div class="tl-title">Алғашқы Кездесу</div>
+        <div class="tl-desc">Бірінші сыныпта жанаша отырып, «атың кім?» деп сұрасқан сол сәт — бәрінің басы.</div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content">
+        <span class="tl-year">2017</span>
+        <div class="tl-title">Ең Жақсы Достар</div>
+        <div class="tl-desc">Бір-бірінің үйіне барып, ата-аналарымыздың бізді «бөлінбейтін жұп» деп атай бастаған кезі.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-content">
+        <span class="tl-year">2019</span>
+        <div class="tl-title">Мектеп Жорығы</div>
+        <div class="tl-desc">Жазғы лагерьде бірге алаулы кеш, жұлдыздарды санап, сыр айтысқан ол түн ешқашан ұмытылмас.</div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content">
+        <span class="tl-year">2021</span>
+        <div class="tl-title">Қиын Кезең</div>
+        <div class="tl-desc">Пандемия уақытында онлайн сабақта бір-бірімізді видеоқоңырауда ғана көрсек те, достықтың жылуы суымады.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-content">
+        <span class="tl-year">2023</span>
+        <div class="tl-title">Соңғы Сынып</div>
+        <div class="tl-desc">Бітіру кешінде бірге билеп, бірге жылаған сол кеш — балалықтың асыл аяқталуы болды.</div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+    <div class="timeline-item">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content">
+        <span class="tl-year">ҚАЗІР</span>
+        <div class="tl-title">Мәңгілік Достық</div>
+        <div class="tl-desc">Жол бөлінсе де, жүрек бөлінбейді. Жасаған достықтарымыз уақыттан тыс жасайды.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FRIENDS -->
+<section id="friends">
+  <span class="section-label reveal">ДОСТАРЫМ</span>
+  <h2 class="section-title reveal">Жүректің Жарықтары</h2>
+  <div class="section-divider reveal"></div>
+  <div class="friends-grid">
+    <div class="friend-card reveal">
+      <div class="friend-avatar">🌟</div>
+      <div class="friend-name">Айназ</div>
+      <div class="friend-role">Жарқын Жұлдыз</div>
+      <p class="friend-desc">Атының өзі айтып тұр — айдай нұрлы, назды жан. Оның болуы сыныпқа ерекше жылу, ерекше жарық берді. Айназсыз бірде-бір күн толық болған жоқ.</p>
+    </div>
+    <div class="friend-card reveal">
+      <div class="friend-avatar">🌸</div>
+      <div class="friend-name">Сая</div>
+      <div class="friend-role">Жүректің Досы</div>
+      <p class="friend-desc">Сая — тыныштық пен сенімнің символы. Ол бір қарасаң-ақ, жан дүниеңді оқып шығатын. Үнсіз жанашырлығы сөзден де мықты болды.</p>
+    </div>
+    <div class="friend-card reveal">
+      <div class="friend-avatar">💎</div>
+      <div class="friend-name">Бегімай</div>
+      <div class="friend-role">Мықты Тұлға</div>
+      <p class="friend-desc">Бегімай — «бегім» сөзіндей, нағыз ханымдық қадір-қасиеті бар жан. Кез келген жағдайда мықты тұрып, бізге де күш беретін.</p>
+    </div>
+    <div class="friend-card reveal">
+      <div class="friend-avatar">✨</div>
+      <div class="friend-name">Элдана</div>
+      <div class="friend-role">Халық Сүйіктісі</div>
+      <p class="friend-desc">Элдана — «елдің данасы». Оның жылы күлкісі мен ашық мінезі бәріне жетіп жататын. Элданамен болған кез — мереке болып есте қалды.</p>
+    </div>
+    <div class="friend-card reveal">
+      <div class="friend-avatar">🌺</div>
+      <div class="friend-name">Мадина</div>
+      <div class="friend-role">Жан Сырласы</div>
+      <p class="friend-desc">Мадина — қиын кезде де, қуанышта да қасыңда болатын нағыз сырлас. Оның сөзі жүректен шығып, жүрекке жетеді. Мәңгілік дос.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MUSIC -->
+<section id="music">
+  <span class="section-label reveal">ЖАНЫМ ӘУЕН</span>
+  <h2 class="section-title reveal">Достықтың Үні</h2>
+  <div class="section-divider reveal"></div>
+  <div class="music-player reveal">
+    <div class="music-visualizer" id="visualizer">
+    </div>
+    <div class="music-cover" id="musicCover">🎵</div>
+    <div class="music-title">Жастық Шақ</div>
+    <div class="music-artist">Мектеп Достарына</div>
+    <div class="music-progress" id="progressBar">
+      <div class="music-progress-fill" id="progressFill"></div>
+    </div>
+    <div class="music-time">
+      <span id="currentTime">0:00</span>
+      <span id="totalTime">3:45</span>
+    </div>
+    <div class="music-controls">
+      <button class="music-btn" id="prevBtn" title="Алдыңғы">⏮</button>
+      <button class="music-btn play" id="playBtn" title="Ойнату">▶</button>
+      <button class="music-btn" id="nextBtn" title="Келесі">⏭</button>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTES -->
+<section id="quotes">
+  <span class="section-label reveal">ДАНАЛЫҚ СӨЗДЕР</span>
+  <h2 class="section-title reveal">Жүректен Жүрекке</h2>
+  <div class="section-divider reveal"></div>
+  <div class="quotes-grid">
+    <div class="quote-card reveal">
+      <p class="quote-text" data-typing="Нағыз дос — бақытыңды өз бақытындай сезінетін, қайғыңды да бірге көтеретін жан."></p>
+      <span class="quote-author">— ХАЛЫҚ ДАНАЛЫҒЫ</span>
+    </div>
+    <div class="quote-card reveal">
+      <p class="quote-text" data-typing="Мектеп бітеді, сабақтар ұмытылады, бірақ бірге өткізген сәттер — жүректің мәңгілік бөлігі болып қалады."></p>
+      <span class="quote-author">— ЖАСТЫҚ ШАҚ ТУРАЛЫ</span>
+    </div>
+    <div class="quote-card reveal">
+      <p class="quote-text" data-typing="Досыңның атын атаған сайын жылы тиетін бір сезім бар — сол сезім достықтың тілі."></p>
+      <span class="quote-author">— ДОСТЫҚ ТУРАЛЫ</span>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section id="final">
+  <div class="stars" id="stars"></div>
+  <h2 class="final-title reveal">Рақмет, Достарым</h2>
+  <p class="final-text reveal">Сіздер болмасаңыздар, мектеп жылдары тек сабақ пен үй тапсырмасынан ғана тұрар еді. Бірақ сіздермен — ол жылдар өмірімнің ең жарқын кітабына айналды. Әр жүлгеде сіздердің есімдеріңіз жазулы. Ұмытпаймын. Ешқашан.</p>
+  <div class="final-signature reveal">Мәңгілік сіздің досыңыз</div>
+  <div class="final-year reveal">2015 — МӘҢГІЛІК</div>
+</section>
+
+<footer>
+  <p>© 2025 · ДОСТЫҚ · Жасалған жүрекпен ❤️</p>
+</footer>
+
+<script>
+// CURSOR
+const cursor = document.getElementById('cursor');
+const trail = document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+setInterval(()=>{
+  tx+=(mx-tx)*0.15;ty+=(my-ty)*0.15;
+  trail.style.left=tx+'px';trail.style.top=ty+'px';
+},16);
+document.querySelectorAll('a,button,.memory-card,.friend-card,.quote-card,.tl-content').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2.5)';});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';});
+});
+
+// MEMORY CARD GLOW
+document.querySelectorAll('.memory-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width*100).toFixed(1)+'%';
+    const y=((e.clientY-r.top)/r.height*100).toFixed(1)+'%';
+    card.style.setProperty('--mx',x);card.style.setProperty('--my',y);
+  });
+});
+
+// LOADER
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('hidden');
+  },2800);
+});
+
+// THEME TOGGLE
+const themeBtn=document.getElementById('theme-btn');
+let dark=true;
+themeBtn.addEventListener('click',()=>{
+  dark=!dark;
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  themeBtn.textContent=dark?'☀️':'🌙';
+});
+
+// PARTICLES
+function createParticles(){
+  const container=document.getElementById('particles');
+  for(let i=0;i<40;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    const size=Math.random()*3+1;
+    p.style.cssText=`
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      bottom:${Math.random()*-20}%;
+      --drift:${(Math.random()-0.5)*200}px;
+      animation-duration:${8+Math.random()*15}s;
+      animation-delay:${Math.random()*10}s;
+      opacity:0;
+    `;
+    container.appendChild(p);
+  }
+}
+createParticles();
+
+// STARS in final
+function createStars(){
+  const container=document.getElementById('stars');
+  for(let i=0;i<80;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    s.style.cssText=`
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      --op:${0.3+Math.random()*0.7};
+      animation-duration:${2+Math.random()*4}s;
+      animation-delay:${Math.random()*4}s;
+    `;
+    container.appendChild(s);
+  }
+}
+createStars();
+
+// SCROLL REVEAL
+const revealEls=document.querySelectorAll('.reveal');
+const revealObs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('visible'),i*80);
+    }
+  });
+},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+revealEls.forEach(el=>revealObs.observe(el));
+
+// MUSIC PLAYER
+let isPlaying=false;
+let progress=0;
+let interval=null;
+const playBtn=document.getElementById('playBtn');
+const progressFill=document.getElementById('progressFill');
+const currentTimeEl=document.getElementById('currentTime');
+const musicCover=document.getElementById('musicCover');
+const vizBars=[];
+
+// Build visualizer
+const viz=document.getElementById('visualizer');
+for(let i=0;i<20;i++){
+  const b=document.createElement('div');
+  b.className='viz-bar';
+  const h=5+Math.random()*25;
+  b.style.setProperty('--h',h+'px');
+  b.style.animationDuration=(0.4+Math.random()*0.6)+'s';
+  b.style.animationDelay=(Math.random()*0.5)+'s';
+  viz.appendChild(b);
+  vizBars.push(b);
+}
+
+playBtn.addEventListener('click',()=>{
+  isPlaying=!isPlaying;
+  playBtn.textContent=isPlaying?'⏸':'▶';
+  musicCover.classList.toggle('playing',isPlaying);
+  vizBars.forEach(b=>b.classList.toggle('active',isPlaying));
+  if(isPlaying){
+    interval=setInterval(()=>{
+      progress+=0.045;
+      if(progress>=100){progress=0;}
+      progressFill.style.width=progress+'%';
+      const total=225;
+      const cur=Math.floor(total*progress/100);
+      const m=Math.floor(cur/60);
+      const s=(cur%60).toString().padStart(2,'0');
+      currentTimeEl.textContent=m+':'+s;
+    },1000);
+  } else {
+    clearInterval(interval);
+  }
+});
+
+document.getElementById('progressBar').addEventListener('click',(e)=>{
+  const r=e.currentTarget.getBoundingClientRect();
+  progress=((e.clientX-r.left)/r.width)*100;
+  progressFill.style.width=progress+'%';
+});
+
+// TYPING ANIMATION for quotes
+const quoteCards=document.querySelectorAll('.quote-card');
+const typingObs=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const el=entry.target.querySelector('[data-typing]');
+      if(el&&!el.dataset.typed){
+        el.dataset.typed='true';
+        const text=el.dataset.typing;
+        el.innerHTML='';
+        const cursor=document.createElement('span');
+        cursor.className='typing-cursor';
+        el.appendChild(cursor);
+        let i=0;
+        function type(){
+          if(i<text.length){
+            el.insertBefore(document.createTextNode(text[i]),cursor);
+            i++;
+            setTimeout(type,30+Math.random()*20);
+          } else {
+            setTimeout(()=>cursor.remove(),1500);
+          }
+        }
+        setTimeout(type,400);
+        typingObs.unobserve(entry.target);
+      }
+    }
+  });
+},{threshold:0.5});
+quoteCards.forEach(c=>typingObs.observe(c));
+
+// AMBIENT BACKGROUND MOTION
+let angle=0;
+function animateBg(){
+  angle+=0.002;
+  const x=50+Math.sin(angle)*5;
+  const y=40+Math.cos(angle*0.7)*5;
+  document.querySelector('.hero-bg').style.background=
+    `radial-gradient(ellipse 80% 60% at ${x}% ${y}%, rgba(201,164,92,0.07) 0%, transparent 70%),
+     radial-gradient(ellipse 40% 40% at 20% 80%, rgba(212,121,58,0.05) 0%, transparent 60%),
+     radial-gradient(ellipse 40% 40% at 80% 20%, rgba(201,164,92,0.05) 0%, transparent 60%)`;
+  requestAnimationFrame(animateBg);
+}
+animateBg();
+</script>
+</body>
+</html>
